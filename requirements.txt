@@ -1,0 +1,8 @@
+fastai
+transformers
+torchvision
+diffusers
+gradio
+torchvision
+matplotlib
+numpy
