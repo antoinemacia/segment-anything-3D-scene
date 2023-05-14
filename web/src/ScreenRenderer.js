@@ -8,7 +8,9 @@ export class ScreenRenderer {
   async takeScreenshot({ name }) {
     const strMime = "image/png";
     const strDownloadMime = "image/octet-stream";
+    const pixelRatio = window.devicePixelRatio;
 
+    this.renderer.setSize( window.innerWidth, window.innerHeight)
     const imgData = this.renderer.domElement.toDataURL(strMime);
 
     this.saveFile(imgData.replace(strMime, strDownloadMime), `${name}.png`);
