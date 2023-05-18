@@ -1,5 +1,3 @@
-fastai
-transformers
 torchvision
 diffusers
 gradio
@@ -8,3 +6,5 @@ matplotlib
 numpy
 GroundingDINO
 Flask
+Flask-Cors
+watchdog

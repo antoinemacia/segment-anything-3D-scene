@@ -3,6 +3,16 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { DepthMapRenderer } from "./src/DepthMapRenderer.js";
 import { ScreenRenderer } from "./src/ScreenRenderer.js";
+import { computeBoundsTree, disposeBoundsTree, acceleratedRaycast } from 'three-mesh-bvh';
+import { MeshSegmentation } from './src/MeshSegmentation';
+import { segmentedPixelCoords } from './data/segmented-outline'
+
+// Add the extension functions
+THREE.BufferGeometry.prototype.computeBoundsTree = computeBoundsTree;
+THREE.BufferGeometry.prototype.disposeBoundsTree = disposeBoundsTree;
+THREE.Mesh.prototype.raycast = acceleratedRaycast;
+
+
 const container = document.getElementsByTagName("canvas")[0];
 
 let renderer, scene, camera;
@@ -11,6 +21,7 @@ let raycaster;
 let controls;
 let screenRenderer;
 let depthRenderer;
+let meshSegmentation;
 
 const intersection = {
   intersects: false,
@@ -44,6 +55,7 @@ function init() {
 
   depthRenderer = new DepthMapRenderer(renderer, scene, camera);
   screenRenderer = new ScreenRenderer(renderer, scene, camera);
+  meshSegmentation = new MeshSegmentation(renderer, scene, camera);
 
   controls = new OrbitControls(camera, renderer.domElement);
 
@@ -133,7 +145,7 @@ function loadGLTF() {
   const loader = new GLTFLoader();
 
   loader.load("./assets/bathroom_interior.glb", function (gltf) {
-    mesh = gltf.scene.children[0];
+    mesh = gltf.scene.children[0]
 
     scene.add(mesh);
     mesh.scale.set(10, 10, 10);
@@ -160,10 +172,14 @@ function loadGLTF() {
 }
 
 function shoot() {
-  depthRenderer.render();
+  // depthRenderer.render();
   // var vector = new THREE.Vector3( mouse.x, mouse.y, 0.5 ).unproject( camera );
 
-  console.log(mouse.x, mouse.y)
+  // console.log(mouse.x, mouse.y)
+  meshSegmentation.segmentMeshViaRaycast({
+    pixelCoordinates: segmentedPixelCoords,
+    targetMesh: mesh
+  })
   
   // var raycaster = new THREE.Raycaster( camera.position, vector );
 
