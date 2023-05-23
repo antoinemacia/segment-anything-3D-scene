@@ -21,8 +21,8 @@ class MaskTransformer:
             # img_data = cv2.imread(img_io)
             # img_data = img_data > 128
             im = Image.fromarray(image)
-            im.save("your_file.png")
-            img_data = cv2.imread("your_file.png")
+            im.save("mask.png")
+            img_data = cv2.imread("mask.png")
             img_data = img_data > 128
 
             img_data = np.asarray(img_data[:, :, 0], dtype=np.double)
