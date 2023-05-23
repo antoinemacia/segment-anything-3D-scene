@@ -1,7 +1,9 @@
 import * as THREE from "three";
+import * as api from './api'
+import { ScreenRenderer } from './ScreenRenderer'
 
 interface SegmentMeshViaRaycast {
-  pixelCoordinates: [number, number][];
+  pointerCoord: { x: number; y: number };
   targetMesh: THREE.Mesh;
 }
 
@@ -10,6 +12,7 @@ export class MeshSegmentation {
   camera: THREE.PerspectiveCamera;
   raycaster: THREE.Raycaster;
   renderer: THREE.WebGLRenderer;
+  screenRenderer: ScreenRenderer;
 
   constructor(
     renderer: THREE.WebGLRenderer,
@@ -20,12 +23,20 @@ export class MeshSegmentation {
     this.renderer = renderer;
     this.camera = camera;
     this.scene = scene;
+    this.screenRenderer = new ScreenRenderer(renderer, scene, camera)
   }
 
   async segmentMeshViaRaycast(params: SegmentMeshViaRaycast) {
-    const { pixelCoordinates } = params
+    const { pointerCoord } = params
 
-    const points = pixelCoordinates.map((pixelCoordinate) => {
+    const imgUrl = await this.screenRenderer.takeScreenshot()
+
+    const { mask } = await api.segment({
+      sourceUrl: imgUrl,
+      pixelCoordinates: [pointerCoord.x, pointerCoord.y]
+    })
+
+    const points = mask.map((pixelCoordinate) => {
       return this.pixelToWorldPosition(pixelCoordinate)
     })
 

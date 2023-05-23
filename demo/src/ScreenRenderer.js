@@ -5,15 +5,17 @@ export class ScreenRenderer {
     this.camera = camera;
   }
 
-  async takeScreenshot({ name }) {
+  async takeScreenshot() {
     const strMime = "image/png";
     const strDownloadMime = "image/octet-stream";
     const pixelRatio = window.devicePixelRatio;
 
-    this.renderer.setSize( window.innerWidth, window.innerHeight)
-    const imgData = this.renderer.domElement.toDataURL(strMime);
+    this.renderer.setSize(window.innerWidth, window.innerHeight)
+    const imgUrl = this.renderer.domElement.toDataURL(strMime);
 
-    this.saveFile(imgData.replace(strMime, strDownloadMime), `${name}.png`);
+    return imgUrl
+
+    // this.saveFile(imgData.replace(strMime, strDownloadMime), `${name}.png`);
   }
 
   saveFile (strData, filename) {

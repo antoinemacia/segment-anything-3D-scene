@@ -12,7 +12,6 @@ THREE.BufferGeometry.prototype.computeBoundsTree = computeBoundsTree;
 THREE.BufferGeometry.prototype.disposeBoundsTree = disposeBoundsTree;
 THREE.Mesh.prototype.raycast = acceleratedRaycast;
 
-
 const container = document.getElementsByTagName("canvas")[0];
 
 let renderer, scene, camera;
@@ -98,7 +97,7 @@ function init() {
 
       console.log(width, height)
 
-      shoot()
+      shoot(event)
     }
   });
 
@@ -171,13 +170,13 @@ function loadGLTF() {
   });
 }
 
-function shoot() {
+function shoot(mouseEvent) {
   // depthRenderer.render();
   // var vector = new THREE.Vector3( mouse.x, mouse.y, 0.5 ).unproject( camera );
 
   // console.log(mouse.x, mouse.y)
   meshSegmentation.segmentMeshViaRaycast({
-    pixelCoordinates: segmentedPixelCoords,
+    pointerCoord: pointerCoord(mouseEvent),
     targetMesh: mesh
   })
   
@@ -204,4 +203,12 @@ function animate() {
 
   renderer.setRenderTarget(null);
   renderer.render(scene, camera);
+}
+
+function pointerCoord(mouseEvent) {
+  const pixelRatio = window.devicePixelRatio;
+  const width = (mouseEvent.clientX) * pixelRatio
+  const height = (mouseEvent.clientY) * pixelRatio
+
+  return { x: width, y: height }
 }
