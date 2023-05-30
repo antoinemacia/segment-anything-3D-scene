@@ -1,4 +1,4 @@
-import sys
+import os
 import cv2
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
@@ -10,13 +10,14 @@ from urllib.request import urlopen
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # GroundingDINO config and checkpoint
-GROUNDING_DINO_CONFIG_PATH = "../../GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py"
-GROUNDING_DINO_CHECKPOINT_PATH = "../../GroundingDINO/weights/groundingdino_swint_ogc.pth"
+GROUNDING_DINO_CONFIG_PATH = os.path.relpath("lib/GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py")
+GROUNDING_DINO_CHECKPOINT_PATH = os.path.relpath("lib/GroundingDINO/weights/groundingdino_swint_ogc.pth")
 
 # Segment-Anything checkpoint
 SAM_ENCODER_VERSION = "vit_h"
-SAM_CHECKPOINT_PATH = "../../sam_vit_h_4b8939.pth"
+SAM_CHECKPOINT_PATH = os.path.relpath("lib/sam/sam_vit_h_4b8939.pth")
 
+print(GROUNDING_DINO_CONFIG_PATH)
 
 class MaskSegmentationError(Exception):
     def __init__(self, message):
@@ -80,8 +81,6 @@ class MaskSegmentation:
 
 
 def url_to_image(url, readFlag=cv2.IMREAD_COLOR):
-    # download the image, convert it to a NumPy array, and then read
-    # it into OpenCV format
     resp = urlopen(url)
     image = np.asarray(bytearray(resp.read()), dtype="uint8")
     image = cv2.imdecode(image, readFlag)

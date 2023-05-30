@@ -2,7 +2,17 @@ import * as THREE from "three";
 import { ScreenRenderer } from "./ScreenRenderer.js";
 
 export class DepthMapRenderer {
-  constructor(renderer, scene, camera) {
+  scene: THREE.Scene;
+  camera: THREE.PerspectiveCamera;
+  raycaster: THREE.Raycaster;
+  renderer: THREE.WebGLRenderer;
+  screenRenderer: ScreenRenderer;
+
+  constructor(
+    renderer: THREE.WebGLRenderer,
+    scene: THREE.Scene,
+    camera: THREE.PerspectiveCamera
+  ) {
     this.renderer = renderer;
     this.scene = scene;
     this.camera = camera;
@@ -37,9 +47,9 @@ export class DepthMapRenderer {
     this.renderer.render(this.scene, this.camera);
 
     setTimeout(() => {
-      this.screenRenderer.takeScreenshot({ name: "depth" });
+      this.screenRenderer.takeScreenshot();
       this.cleanup();
-      this.screenRenderer.takeScreenshot({ name: "diffuse" });
+      this.screenRenderer.takeScreenshot();
     }, 1000);
   }
 

@@ -1,5 +1,15 @@
+import * as THREE from "three";
+
 export class ScreenRenderer {
-  constructor(renderer, scene, camera) {
+  scene: THREE.Scene;
+  camera: THREE.PerspectiveCamera;
+  renderer: THREE.WebGLRenderer;
+
+  constructor(
+    renderer: THREE.WebGLRenderer,
+    scene: THREE.Scene,
+    camera: THREE.PerspectiveCamera
+  ) {
     this.renderer = renderer;
     this.scene = scene;
     this.camera = camera;
@@ -15,14 +25,11 @@ export class ScreenRenderer {
 
   saveFile (strData, filename) {
     const link = document.createElement("a");
-    if (typeof link.download === "string") {
-      document.body.appendChild(link)
-      link.download = filename;
-      link.href = strData;
-      link.click();
-      document.body.removeChild(link)
-    } else {
-      location.replace(uri);
-    }
+
+    document.body.appendChild(link)
+    link.download = filename;
+    link.href = strData;
+    link.click();
+    document.body.removeChild(link)
   };
 }
