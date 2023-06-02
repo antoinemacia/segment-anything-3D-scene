@@ -1,10 +1,7 @@
-fastai
 transformers
 torchvision
 diffusers
-gradio
 torchvision
 matplotlib
 numpy
-GroundingDINO
 Flask

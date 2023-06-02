@@ -3,21 +3,14 @@ import cv2
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 import torch
-from groundingdino.util.inference import Model
 from segment_anything import sam_model_registry, SamPredictor
 from urllib.request import urlopen
 
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-# GroundingDINO config and checkpoint
-GROUNDING_DINO_CONFIG_PATH = os.path.relpath("lib/GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py")
-GROUNDING_DINO_CHECKPOINT_PATH = os.path.relpath("lib/GroundingDINO/weights/groundingdino_swint_ogc.pth")
-
 # Segment-Anything checkpoint
 SAM_ENCODER_VERSION = "vit_h"
 SAM_CHECKPOINT_PATH = os.path.relpath("lib/sam/sam_vit_h_4b8939.pth")
-
-print(GROUNDING_DINO_CONFIG_PATH)
 
 class MaskSegmentationError(Exception):
     def __init__(self, message):
@@ -27,10 +20,8 @@ class MaskSegmentationError(Exception):
 
 class MaskSegmentation:
     sam_predictor: SamPredictor
-    grounding_dino_model: Model
 
     def __init__(self):
-        self.grounding_dino_model = self.__init_grounding_dino_model()
         self.sam_predictor = self.__init_sam_predictor()
 
     def segment_from_pixel_coords(self, sourceUrl: str, pixel_coords: list[float]) -> np.ndarray:
@@ -67,13 +58,6 @@ class MaskSegmentation:
             checkpoint=SAM_CHECKPOINT_PATH)
         sam.to(device=DEVICE)
         return SamPredictor(sam)
-
-    def __init_grounding_dino_model(self) -> Model:
-        return Model(
-            model_config_path=GROUNDING_DINO_CONFIG_PATH,
-            model_checkpoint_path=GROUNDING_DINO_CHECKPOINT_PATH,
-            device=DEVICE
-        )
 
     def __get_image_from_url(self, sourceUrl: str) -> np.ndarray:
         image = url_to_image(sourceUrl)
