@@ -562,9 +562,10 @@ export class Viewer {
 
     this.state = {
       ...this.state,
-      segmentByPixelCoord: () =>
-        this.segmentByPixelCoord(this.meshSegmentation),
-    };
+      segmentByPixelCoord: () => {
+        document.querySelector('canvas').style.cursor = 'crosshair'
+        this.segmentByPixelCoord(this.meshSegmentation)
+    }};
 
     // Segmentation controls.
     this.gui.add(this.state, "segmentByPixelCoord").name("Segment by click");
@@ -574,19 +575,23 @@ export class Viewer {
     const cb = async (event) => {
       window.removeEventListener("pointerup", cb);
 
+      const canvas = document.querySelector('canvas')
       const spinner = document.querySelector('.spinner')
       const overlay = document.querySelector('.overlay')
 
       spinner.style.display = 'block'
       overlay.style.height = '100%'
+      overlay.style.cursor = 'wait'
 
       await module.segmentMeshViaRaycast({
         pointerCoord: this.pointerCoord(event),
         targetMesh: window.VIEWER.scene.children[0],
       });
 
+      canvas.style.cursor = 'auto'
       spinner.style.display = 'none'
       overlay.style.height = '0%'
+      overlay.style.cursor = 'auto'
     };
     window.addEventListener("pointerup", cb);
   }
