@@ -39,13 +39,17 @@ export class MeshSegmentation {
       pixelCoordinates: [pointerCoord.x, pointerCoord.y]
     })
 
-    const points = mask.map((pixelCoordinate) => {
-      return this.pixelToWorldPosition(pixelCoordinate)
-    })
+    return new Promise((resolve, reject) => {
+      const points = mask.map((pixelCoordinate) => {
+        return this.pixelToWorldPosition(pixelCoordinate)
+      })
 
-    const box = new THREE.Box3().setFromPoints(points);
-    const helper = new THREE.Box3Helper( box, 0xffff00 );
-    this.scene.add( helper );
+      const box = new THREE.Box3().setFromPoints(points);
+      const helper = new THREE.Box3Helper( box, 0xffff00 );
+      this.scene.add( helper );
+
+      resolve(null)
+    })
   }
 
   private pixelToWorldPosition(pixelCoordinate: [number, number]): THREE.Vector3 {

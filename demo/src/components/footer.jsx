@@ -12,13 +12,13 @@ export function Footer () {
 
       <span class="separator" aria-hidden="true">|</span>
 
-      <a class="item" target="_blank" href="https://github.com/donmccurdy/three-gltf-viewer/issues/new">
-        help & feedback
+      <a class="item" target="_blank" href="https://sketchfab.com/3d-models/bathroom-interior-7609ef43ffc04cc280f1525ffdc6d89a">
+        Default "Bathroom interior" model from <a href="https://sketchfab.com/Akshaykhedkar97" target="_blank">Akshaykhedkar97</a>
       </a>
 
       <span class="separator" aria-hidden="true">|</span>
 
-      <a class="item" target="_blank" href="https://github.com/donmccurdy/three-gltf-viewer">
+      <a class="item" target="_blank" href="https://github.com/antoinemc/segment-anything-3D-mesh">
         github
       </a>
     </footer>

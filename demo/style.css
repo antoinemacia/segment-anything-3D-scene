@@ -318,3 +318,11 @@ footer .separator {
     opacity: 0;
   }
 }
+
+.overlay {
+  width: 100%;
+  top: 0;
+  left: 0;
+  position: absolute;
+  opacity: 0;
+}

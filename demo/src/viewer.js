@@ -19,7 +19,6 @@ import {
   WebGLRenderer,
   sRGBEncoding,
   LinearToneMapping,
-  ACESFilmicToneMapping,
 } from "three";
 import Stats from "three/examples/jsm/libs/stats.module.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
@@ -27,7 +26,6 @@ import { KTX2Loader } from "three/examples/jsm/loaders/KTX2Loader.js";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { EXRLoader } from "three/examples/jsm/loaders/EXRLoader.js";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import { GUI } from "dat.gui";
 import { environments } from "./environments.js";
@@ -139,12 +137,6 @@ export class Viewer {
 
     this.el.appendChild(this.renderer.domElement);
 
-    this.cameraCtrl = null;
-    this.cameraFolder = null;
-    this.animFolder = null;
-    this.animCtrls = [];
-    this.morphFolder = null;
-    this.morphCtrls = [];
     this.skeletonHelpers = [];
     this.gridHelper = null;
     this.axesHelper = null;
@@ -433,48 +425,6 @@ export class Viewer {
     this.lights.length = 0;
   }
 
-  updateEnvironment() {
-    const environment = environments.filter(
-      (entry) => entry.name === this.state.environment
-    )[0];
-
-    this.getCubeMapTexture(environment).then(({ envMap }) => {
-      this.scene.environment = envMap;
-      this.scene.background = this.state.background
-        ? envMap
-        : this.backgroundColor;
-    });
-  }
-
-  getCubeMapTexture(environment) {
-    const { id, path } = environment;
-
-    // neutral (THREE.RoomEnvironment)
-    if (id === "neutral") {
-      return Promise.resolve({ envMap: this.neutralEnvironment });
-    }
-
-    // none
-    if (id === "") {
-      return Promise.resolve({ envMap: null });
-    }
-
-    return new Promise((resolve, reject) => {
-      new EXRLoader().load(
-        path,
-        (texture) => {
-          const envMap =
-            this.pmremGenerator.fromEquirectangular(texture).texture;
-          this.pmremGenerator.dispose();
-
-          resolve({ envMap });
-        },
-        undefined,
-        reject
-      );
-    });
-  }
-
   updateDisplay() {
     if (this.skeletonHelpers.length) {
       this.skeletonHelpers.forEach((helper) => this.scene.remove(helper));
@@ -621,13 +571,22 @@ export class Viewer {
   }
 
   segmentByPixelCoord(module) {
-    const cb = (event) => {
-      module.segmentMeshViaRaycast({
+    const cb = async (event) => {
+      window.removeEventListener("pointerup", cb);
+
+      const spinner = document.querySelector('.spinner')
+      const overlay = document.querySelector('.overlay')
+
+      spinner.style.display = 'block'
+      overlay.style.height = '100%'
+
+      await module.segmentMeshViaRaycast({
         pointerCoord: this.pointerCoord(event),
         targetMesh: window.VIEWER.scene.children[0],
       });
 
-      window.removeEventListener("pointerup", cb);
+      spinner.style.display = 'none'
+      overlay.style.height = '0%'
     };
     window.addEventListener("pointerup", cb);
   }
