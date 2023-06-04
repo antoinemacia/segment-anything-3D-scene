@@ -20,7 +20,57 @@ Basically 2D to 3D space conversions, nothing fancy.
   * `./demo/lib/api` contains the processing API (segmentation + identification of volumes + optimisation like edge extraction)
   * `./demo/lib/three` contains the adapters used in THREE for 2D to 3D projection and vice versa
 
-## Installation / Run the demo
+## Installation
+
+The code requires `python>=3.8`, as well as pytorch>=1.7 and torchvision>=0.8. Please follow the instructions here to install both PyTorch and TorchVision dependencies. Installing both PyTorch and TorchVision with CUDA support is strongly recommended.
+
+Also recommend using a package manager for python env - I use [Mamba (fast conda clone)](https://mamba.readthedocs.io/en/latest/index.html#)
+
+1. Download the pretrained weights
+```
+cd lib/sam
+
+# Windows / Linux
+wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
+# Mac
+curl https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth -o sam_vit_h_4b8939.pth
+```
+
+2. Install SAM
+
+```
+pip install 'git+https://github.com/facebookresearch/segment-anything.git'
+```
+
+3. Install dependencies
+
+```
+# Conda
+conda install --file requirements.txt
+
+# Mamba
+mamba install --file requirements.txt
+
+# Pip
+pip install --file requirements.txt
+```
+
+**HINT**
+
+You can test the installation by running `notebooks/generate_mask.ipynb`
+
+## Run the demo
+
+While the demo works on CPU, it is strongly recommended to run it on GPU. The demo will automatically detect if a GPU is available and use it for processing.
+
+1. Start the processing server
+```
+flask --app demo/lib/api/app run
+```
+2. In another shell, start the dev server
+```
+npm run dev --prefix demo
+```
 
 ## Dependencies (and many thanks to)
 - [THREE.js](https://threejs.org/) for rendering of scene

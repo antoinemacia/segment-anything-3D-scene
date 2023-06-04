@@ -2,6 +2,13 @@ transformers
 torchvision
 diffusers
 torchvision
-matplotlib
 numpy
 Flask
+opencv
+pycocotools
+matplotlib
+onnxruntime
+onnx
+ipykernel
+pillow
+wget
