@@ -61,6 +61,8 @@ You can test the installation by running `notebooks/generate_mask.ipynb`
 
 ## Run the demo
 
+![Demo](./assets/demo.png)
+
 While the demo works on CPU, it is strongly recommended to run it on GPU. The demo will automatically detect if a GPU is available and use it for processing.
 
 1. Start the processing server
