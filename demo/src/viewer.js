@@ -293,6 +293,10 @@ export class Viewer {
       this.defaultCamera.lookAt(center);
     }
 
+    this.controls.addEventListener("change", () => {
+      console.log(this.defaultCamera.position.toArray());
+    })
+
     this.setCamera(DEFAULT_CAMERA);
 
     this.axesCamera.position.copy(this.defaultCamera.position);

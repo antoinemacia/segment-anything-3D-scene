@@ -1,43 +1,39 @@
-import WebGL from 'three/examples/jsm/capabilities/WebGL.js';
-import { Viewer } from './viewer.js';
-import { SimpleDropzone } from 'simple-dropzone';
-import { Validator } from './validator.js';
-import { Footer } from './components/footer.jsx';
-import queryString from 'query-string';
-import defaultScene from '../assets/bathroom_interior.glb'
+import WebGL from "three/examples/jsm/capabilities/WebGL.js";
+import { Viewer } from "./viewer.js";
+import { SimpleDropzone } from "simple-dropzone";
+import { Validator } from "./validator.js";
+import { Footer } from "./components/footer.jsx";
+import queryString from "query-string";
+import defaultScene from "../assets/bathroom_interior.glb";
 
 window.VIEWER = {};
 
 if (!(window.File && window.FileReader && window.FileList && window.Blob)) {
-  console.error('The File APIs are not fully supported in this browser.');
+  console.error("The File APIs are not fully supported in this browser.");
 } else if (!WebGL.isWebGLAvailable()) {
-  console.error('WebGL is not supported in this browser.');
+  console.error("WebGL is not supported in this browser.");
 }
 
 class App {
-
   /**
    * @param  {Element} el
    * @param  {Location} location
    */
-  constructor (el, location) {
-
+  constructor(el, location) {
     const hash = location.hash ? queryString.parse(location.hash) : {};
     this.options = {
       kiosk: Boolean(hash.kiosk),
       model: defaultScene,
-      preset: hash.preset || '',
-      cameraPosition: hash.cameraPosition
-        ? hash.cameraPosition.split(',').map(Number)
-        : null
+      preset: hash.preset || "",
+      cameraPosition:[0.06939725179731979, 0.1680699096066083, 5.21172118112607]
     };
 
     this.el = el;
     this.viewer = null;
     this.viewerEl = null;
-    this.spinnerEl = el.querySelector('.spinner');
-    this.dropEl = el.querySelector('.dropzone');
-    this.inputEl = el.querySelector('#file-input');
+    this.spinnerEl = el.querySelector(".spinner");
+    this.dropEl = el.querySelector(".dropzone");
+    this.inputEl = el.querySelector("#file-input");
     this.validator = new Validator(el);
 
     this.createDropzone();
@@ -46,33 +42,33 @@ class App {
     const options = this.options;
 
     if (options.kiosk) {
-      const headerEl = document.querySelector('header');
-      headerEl.style.display = 'none';
+      const headerEl = document.querySelector("header");
+      headerEl.style.display = "none";
     }
 
     if (options.model) {
-      this.view(options.model, '', new Map());
+      this.view(options.model, "", new Map());
     }
   }
 
   /**
    * Sets up the drag-and-drop controller.
    */
-  createDropzone () {
+  createDropzone() {
     const dropCtrl = new SimpleDropzone(this.dropEl, this.inputEl);
-    dropCtrl.on('drop', ({files}) => this.load(files));
-    dropCtrl.on('dropstart', () => this.showSpinner());
-    dropCtrl.on('droperror', () => this.hideSpinner());
+    dropCtrl.on("drop", ({ files }) => this.load(files));
+    dropCtrl.on("dropstart", () => this.showSpinner());
+    dropCtrl.on("droperror", () => this.hideSpinner());
   }
 
   /**
    * Sets up the view manager.
    * @return {Viewer}
    */
-  createViewer () {
-    this.viewerEl = document.createElement('div');
-    this.viewerEl.classList.add('viewer');
-    this.dropEl.innerHTML = '';
+  createViewer() {
+    this.viewerEl = document.createElement("div");
+    this.viewerEl.classList.add("viewer");
+    this.dropEl.innerHTML = "";
     this.dropEl.appendChild(this.viewerEl);
     this.viewer = new Viewer(this.viewerEl, this.options);
     return this.viewer;
@@ -82,18 +78,18 @@ class App {
    * Loads a fileset provided by user action.
    * @param  {Map<string, File>} fileMap
    */
-  load (fileMap) {
+  load(fileMap) {
     let rootFile;
     let rootPath;
     Array.from(fileMap).forEach(([path, file]) => {
       if (file.name.match(/\.(gltf|glb)$/)) {
         rootFile = file;
-        rootPath = path.replace(file.name, '');
+        rootPath = path.replace(file.name, "");
       }
     });
 
     if (!rootFile) {
-      this.onError('No .gltf or .glb asset found.');
+      this.onError("No .gltf or .glb asset found.");
     }
 
     this.view(rootFile, rootPath, fileMap);
@@ -105,19 +101,17 @@ class App {
    * @param  {string} rootPath
    * @param  {Map<string, File>} fileMap
    */
-  view (rootFile, rootPath, fileMap) {
-
+  view(rootFile, rootPath, fileMap) {
     if (this.viewer) this.viewer.clear();
 
     const viewer = this.viewer || this.createViewer();
 
-    const fileURL = typeof rootFile === 'string'
-      ? rootFile
-      : URL.createObjectURL(rootFile);
+    const fileURL =
+      typeof rootFile === "string" ? rootFile : URL.createObjectURL(rootFile);
 
     const cleanup = () => {
       this.hideSpinner();
-      if (typeof rootFile === 'object') URL.revokeObjectURL(fileURL);
+      if (typeof rootFile === "object") URL.revokeObjectURL(fileURL);
     };
 
     viewer
@@ -134,48 +128,47 @@ class App {
   /**
    * @param  {Error} error
    */
-  onError (error) {
-    let message = (error||{}).message || error.toString();
+  onError(error) {
+    let message = (error || {}).message || error.toString();
     if (message.match(/ProgressEvent/)) {
-      message = 'Unable to retrieve this file. Check JS console and browser network tab.';
+      message =
+        "Unable to retrieve this file. Check JS console and browser network tab.";
     } else if (message.match(/Unexpected token/)) {
       message = `Unable to parse file content. Verify that this file is valid. Error: "${message}"`;
     } else if (error && error.target && error.target instanceof Image) {
-      message = 'Missing texture: ' + error.target.src.split('/').pop();
+      message = "Missing texture: " + error.target.src.split("/").pop();
     }
     window.alert(message);
     console.error(error);
   }
 
-  showSpinner () {
-    this.spinnerEl.style.display = '';
+  showSpinner() {
+    this.spinnerEl.style.display = "";
   }
 
-  hideSpinner () {
-    this.spinnerEl.style.display = 'none';
+  hideSpinner() {
+    this.spinnerEl.style.display = "none";
   }
 }
 
 document.body.innerHTML += Footer();
 
-document.addEventListener('DOMContentLoaded', () => {
-
+document.addEventListener("DOMContentLoaded", () => {
   const app = new App(document.body, location);
 
   window.VIEWER.app = app;
 
-  console.info('[glTF Viewer] Debugging data exported as `window.VIEWER`.');
-
+  console.info("[glTF Viewer] Debugging data exported as `window.VIEWER`.");
 });
 
-function isIFrame () {
-    try {
-        return window.self !== window.top;
-    } catch (e) {
-        return true;
-    }
+function isIFrame() {
+  try {
+    return window.self !== window.top;
+  } catch (e) {
+    return true;
+  }
 }
 
 // bandwidth on this page is very high. hoping to
 // figure out what percentage of that is embeds.
-Tinybird.trackEvent('load', {embed: isIFrame()});
+Tinybird.trackEvent("load", { embed: isIFrame() });

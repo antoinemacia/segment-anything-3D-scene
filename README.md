@@ -86,6 +86,6 @@ npm run dev --prefix demo
 
 ## Caveats
 - Slow on CPU (most of the time is spent on segmentation/identification)
-- The bounding box is not always accurate (especially when the camera is not facing the object directly)
-  * To improve accuracy, you would need to take multiple renders of the scene from different angles and then combine the masks to get a more accurate bounding box
+- The bounding box is not always accurate (especially when the camera is not facing the object directly on segmentation)
+  * To improve accuracy, you would need to take multiple renders of the scene from different angles and then combine the masks to get a more accurate bounding box (wether in processing using a virtual grid, or client side with an offscreen canvas?)
 
