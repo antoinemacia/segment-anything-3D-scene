@@ -4,11 +4,10 @@ diffusers
 torchvision
 numpy
 Flask
-opencv
+opencv-python
 pycocotools
 matplotlib
 onnxruntime
 onnx
 ipykernel
 pillow
-wget

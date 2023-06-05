@@ -38,8 +38,10 @@ curl https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth -o sam
 
 2. Install SAM
 
+From the root directory
+
 ```
-pip install 'git+https://github.com/facebookresearch/segment-anything.git'
+pip install git+https://github.com/facebookresearch/segment-anything.git
 ```
 
 3. Install dependencies
@@ -64,6 +66,8 @@ You can test the installation by running `notebooks/generate_mask.ipynb`
 ![Demo](./assets/demo.png)
 
 While the demo works on CPU, it is strongly recommended to run it on GPU. The demo will automatically detect if a GPU is available and use it for processing.
+
+From the root directory
 
 1. Start the processing server
 ```
