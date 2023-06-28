@@ -54,7 +54,7 @@ conda install --file requirements.txt
 mamba install --file requirements.txt
 
 # Pip
-pip install --file requirements.txt
+pip install -r requirements.txt
 ```
 
 **HINT**
