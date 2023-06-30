@@ -25,9 +25,13 @@ class MaskTransformer:
             # img_io.seek(0)
             # img_data = cv2.imread(img_io)
             # img_data = img_data > 128
-            im = Image.fromarray(image)
-            im.save(temp_folder("mask.png"))
-            img_data = cv2.imread(temp_folder("mask.png"))
+            # im = Image.fromarray(image)
+            # im.save(temp_folder("mask.png"))
+            # img_data = cv2.imread(temp_folder("mask.png"))
+
+            # image is 2D array of 0 and 1, so we need to convert it to 3D array of 0 and 255
+            img_data = np.stack((image * 255,)*3, axis = -1)
+            print(img_data.shape)
             img_data = img_data > 128
 
             img_data = np.asarray(img_data[:, :, 0], dtype=np.double)

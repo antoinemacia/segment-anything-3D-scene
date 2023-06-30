@@ -5,8 +5,11 @@ from PIL import Image, ImageDraw, ImageFont
 import torch
 from segment_anything import sam_model_registry, SamPredictor
 from urllib.request import urlopen
+from typing import List
 
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+# may need to force CPU if GPU memory is not enough
+# DEVICE = torch.device('cpu')
 
 # Segment-Anything checkpoint
 SAM_ENCODER_VERSION = "vit_h"
@@ -24,7 +27,7 @@ class MaskSegmentation:
     def __init__(self):
         self.sam_predictor = self.__init_sam_predictor()
 
-    def segment_from_pixel_coords(self, sourceUrl: str, pixel_coords: list[float]) -> np.ndarray:
+    def segment_from_pixel_coords(self, sourceUrl: str, pixel_coords: List[float]) -> np.ndarray:
         try:
             image = self.__get_image_from_url(sourceUrl)
             self.sam_predictor.set_image(image)
